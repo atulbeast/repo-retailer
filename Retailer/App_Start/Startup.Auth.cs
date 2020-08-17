@@ -10,6 +10,7 @@ using Microsoft.Owin.Security.OAuth;
 using Owin;
 using Retailer.Providers;
 using Retailer.Models;
+using Microsoft.Owin.Security.Infrastructure;
 
 namespace Retailer
 {
@@ -25,7 +26,7 @@ namespace Retailer
             // Configure the db context and user manager to use a single instance per request
             app.CreatePerOwinContext(ApplicationDbContext.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
-
+            app.CreatePerOwinContext<ApplicationRoleManager>(ApplicationRoleManager.Create);
             // Enable the application to use a cookie to store information for the signed in user
             // and to use a cookie to temporarily store information about a user logging in with a third party login provider
             app.UseCookieAuthentication(new CookieAuthenticationOptions());
@@ -37,6 +38,11 @@ namespace Retailer
             {
                 TokenEndpointPath = new PathString("/Token"),
                 Provider = new ApplicationOAuthProvider(PublicClientId),
+                RefreshTokenProvider = new AuthenticationTokenProvider()
+                {
+                    OnCreate = CreateRefreshToken,
+                    OnReceive = RecieveRefreshToken
+                },  
                 AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
                 // In production mode set AllowInsecureHttp = false
@@ -65,5 +71,15 @@ namespace Retailer
             //    ClientSecret = ""
             //});
         }
+        private static void RecieveRefreshToken(AuthenticationTokenReceiveContext obj)
+        {
+            //throw new NotImplementedException();  
+            obj.DeserializeTicket(obj.Token);
+        }
+        private static void CreateRefreshToken(AuthenticationTokenCreateContext obj)
+        {
+            // throw new NotImplementedException();  
+            obj.SetToken(obj.SerializeTicket());
+        }  
     }
 }
