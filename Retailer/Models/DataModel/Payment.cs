@@ -11,8 +11,7 @@ namespace Retailer.Models.DataModel
         public long Id { get; set; }
         public string TransactionId { get; set; }
         public string PaymentId { get; set; }
-        [ForeignKey("Appointment")]
-        public long AppointmentId { get; set; }
+        
         
     }
 }

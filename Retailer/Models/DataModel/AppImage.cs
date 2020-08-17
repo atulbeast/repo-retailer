@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace DoctorKind.Models.DbEntities
+namespace Retailer.Models.DataModel
 {
     public class ItemType
     {
