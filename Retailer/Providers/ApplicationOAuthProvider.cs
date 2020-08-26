@@ -31,8 +31,14 @@ namespace Retailer.Providers
         {
             var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
-            ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
+            ApplicationUser user;
+            //if(context.)
+            
+            user=await userManager.FindAsync(context.UserName, context.Password);
 
+            if (user == null)
+                user = await userManager.OTPCheck(context.UserName, context.Password); 
+            
             if (user == null)
             {
                 context.SetError("invalid_grant", "The user name or password is incorrect.");

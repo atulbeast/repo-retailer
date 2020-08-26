@@ -18,6 +18,7 @@ namespace Retailer.Models.DataModel
         public long SubCategoryId { get; set; }
         public virtual SubCategory SubCategory { get; set; }
         public virtual Shop Shop{get;set;}
+        
     }
 
     public class ProductImage

@@ -4,7 +4,8 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Retailer.Models;
-
+using System.Linq;
+using Retailer.Common;
 namespace Retailer
 {
     // Configure the application user manager used in this application. UserManager is defined in ASP.NET Identity and is used by the application.
@@ -15,6 +16,36 @@ namespace Retailer
             : base(store)
         {
         }
+
+        public async Task<ApplicationUser> OTPCheck(string MobileNumber, string OTP)
+        {
+            ApplicationUser user;
+            using(ApplicationDbContext db=new ApplicationDbContext())
+            {
+                user= db.Users.FirstOrDefault(x => x.OTP == OTP && x.MobileNumber==MobileNumber);
+            }
+            //var manager = new ApplicationUserManager();
+            //var item=manager.Users.fin
+            return user;
+        }
+
+        public async Task<ApplicationUser> IfExistSendOTP(string MobileNumber)
+        {
+            ApplicationUser user;
+            using (ApplicationDbContext db = new ApplicationDbContext())
+            {
+                user = db.Users.FirstOrDefault(x => x.MobileNumber == MobileNumber);
+                if (user != null)
+                {
+                    user.OTP = Utils.GenerateRandomNo();
+                    await db.SaveChangesAsync();
+                    await Utils.SendSMS(MobileNumber, "Your OTP for Retailer App is " + user.OTP);
+                }
+            }
+            
+            return user;
+        }
+
 
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {

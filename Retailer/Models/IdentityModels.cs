@@ -43,7 +43,7 @@ namespace Retailer.Models
         public DbSet<ProductImage> ProductImage { get; set; }
         public DbSet<Document> Document { get; set; }
         public DbSet<WishList> WishList { get; set; }
-        
+        public DbSet<AppImage> AppImage { get; set; }
         
         public static ApplicationDbContext Create()
         {
