@@ -199,7 +199,9 @@
     <Compile Include="Common\Utils.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AddressesController.cs" />
+    <Compile Include="Controllers\BannersController.cs" />
     <Compile Include="Controllers\BaseApiController.cs" />
+    <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageImageController.cs" />
@@ -218,6 +220,14 @@
     <Compile Include="Migrations\202008181813277_AppImage_Added.cs" />
     <Compile Include="Migrations\202008181813277_AppImage_Added.Designer.cs">
       <DependentUpon>202008181813277_AppImage_Added.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008261635120_MobileNumberConfirmed.cs" />
+    <Compile Include="Migrations\202008261635120_MobileNumberConfirmed.Designer.cs">
+      <DependentUpon>202008261635120_MobileNumberConfirmed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008281353563_subcategory_imgurl.cs" />
+    <Compile Include="Migrations\202008281353563_subcategory_imgurl.Designer.cs">
+      <DependentUpon>202008281353563_subcategory_imgurl.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -318,6 +328,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202008181813277_AppImage_Added.resx">
       <DependentUpon>202008181813277_AppImage_Added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008261635120_MobileNumberConfirmed.resx">
+      <DependentUpon>202008261635120_MobileNumberConfirmed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008281353563_subcategory_imgurl.resx">
+      <DependentUpon>202008281353563_subcategory_imgurl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -10,6 +10,7 @@ namespace Retailer.Models.DataModel
     {
         public long Id { get; set; }
         public string Name { get; set; }
+        public string ImageUrl { get; set; }
         [ForeignKey("Category")]
         public long CategoryId { get;set; }
         public virtual Category Category { get; set; }

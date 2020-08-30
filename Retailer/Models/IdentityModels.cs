@@ -14,6 +14,7 @@ namespace Retailer.Models
         public bool IsDeleted { get; set; }
         public string OTP { get; set; }
         public string MobileNumber { get; set; }
+        public bool MobileNumberConfirmed { get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -28,7 +29,7 @@ namespace Retailer.Models
         public ApplicationDbContext()
             : base("RetailerConnection", throwIfV1Schema: false)
         {
-            Database.SetInitializer(new ApplicationInitializer());
+          //  Database.SetInitializer(new ApplicationInitializer());
         }
         public DbSet<Address> Address { get; set; }
         public DbSet<Banner> Banner { get; set; }
@@ -49,35 +50,35 @@ namespace Retailer.Models
         {
             return new ApplicationDbContext();
         }
-        public class ApplicationInitializer : System.Data.Entity.DropCreateDatabaseIfModelChanges<ApplicationDbContext>
-        {
-            protected override void Seed(ApplicationDbContext context)
-            {
-                var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
-                var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
+        //public class ApplicationInitializer : System.Data.Entity.DropCreateDatabaseIfModelChanges<ApplicationDbContext>
+        //{
+        //    protected override void Seed(ApplicationDbContext context)
+        //    {
+        //        var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
+        //        var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
 
-                // Create Admin Role
-                string[] roleNames = { "Admin", "Owner",  "SuperAdmin", "Employee"};
-                IdentityResult roleResult;
-                foreach (string roleName in roleNames)
-                {// Check to see if Role Exists, if not create it
-                    if (!RoleManager.RoleExists(roleName))
-                    {
-                        roleResult = RoleManager.Create(new IdentityRole(roleName));
-                        if (roleName == "SuperAdmin")
-                        {
-                            var store = new UserStore<ApplicationUser>(context);
-                            var manager = new UserManager<ApplicationUser>(store);
-                            var user = new ApplicationUser { UserName = "admin" };
-                            manager.Create(user, "retailer@123");
-                            manager.AddToRole(user.Id, "SuperAdmin");
-                        }
-                    }
-                }
+        //        // Create Admin Role
+        //        string[] roleNames = { "Admin", "Consumer",  "Retailer", "FOS"};
+        //        IdentityResult roleResult;
+        //        foreach (string roleName in roleNames)
+        //        {// Check to see if Role Exists, if not create it
+        //            if (!RoleManager.RoleExists(roleName))
+        //            {
+        //                roleResult = RoleManager.Create(new IdentityRole(roleName));
+        //                if (roleName == "Admin")
+        //                {
+        //                    var store = new UserStore<ApplicationUser>(context);
+        //                    var manager = new UserManager<ApplicationUser>(store);
+        //                    var user = new ApplicationUser { UserName = "admin" };
+        //                    manager.Create(user, "retailer@123");
+        //                    manager.AddToRole(user.Id, "Admin");
+        //                }
+        //            }
+        //        }
 
                 
-            }
-        }
+        //    }
+        //}
         
     }
 }

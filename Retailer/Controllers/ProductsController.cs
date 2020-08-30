@@ -40,6 +40,18 @@ namespace Retailer.Controllers
             
         }
 
+
+        // GET: api/Products
+        [Route("api/ProductBySubCategory")]
+        public async Task<HttpResponseMessage> GetProductBySubCategory(long id)
+        {
+            var product = await db.Product.Where(x=>x.SubCategoryId==id).ToListAsync();
+            return Request.CreateResponse<ResponseModel<List<Product>>>(new ResponseModel<List<Product>> { Status = HttpStatusCode.OK, Data = product, Message = "data updated" });
+        }
+
+
+
+
         // PUT: api/Products/5
         public async Task<HttpResponseMessage> PutProduct(long id, ProductModel productModel)
         {

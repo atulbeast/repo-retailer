@@ -331,10 +331,16 @@ namespace Retailer.Controllers
                 return Request.CreateResponse<ResponseModel<RegisterBindingModel>>(HttpStatusCode.BadRequest, new ResponseModel<RegisterBindingModel> { Status = HttpStatusCode.BadRequest, Data = model, Message = Utils.getErrors(ModelState) });
             }
 
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email,MobileNumber=model.MobileNumber };
+            var user = new ApplicationUser() { UserName = "mobUser", Email = model.Email,MobileNumber=model.MobileNumber };
 
-            IdentityResult result = await UserManager.CreateAsync(user, model.Password);
-            UserManager.AddToRole(user.Id, "Employee");   
+           
+            try
+            {
+                IdentityResult result = await UserManager.CreateAsync(user, "defaultPass");
+                UserManager.AddToRole(user.Id, "Consumer");
+            
+            await UserManager.IfExistSendOTP(model.MobileNumber);
+            
             if (!result.Succeeded)
             {
                 foreach (string error in result.Errors)
@@ -343,8 +349,15 @@ namespace Retailer.Controllers
                 }
                 return Request.CreateResponse<ResponseModel<RegisterBindingModel>>(HttpStatusCode.InternalServerError, new ResponseModel<RegisterBindingModel> { Status = HttpStatusCode.InternalServerError, Data = model, Message = Utils.getErrors(ModelState) });
             }
-
             return Request.CreateResponse<ResponseModel<RegisterBindingModel>>(HttpStatusCode.Created, new ResponseModel<RegisterBindingModel> { Status = HttpStatusCode.Created, Data = model, Message = "Added Successfully" });
+           }
+            catch(Exception ex)
+            {
+                return Request.CreateResponse<ResponseModel<RegisterBindingModel>>( new ResponseModel<RegisterBindingModel> { Status = HttpStatusCode.InternalServerError, Data = model, Message = ex.Message.ToString() });
+
+            }
+
+           
         }
 
         [HttpGet]
@@ -357,10 +370,8 @@ namespace Retailer.Controllers
                 return Request.CreateResponse<ResponseModel<string>>(HttpStatusCode.BadRequest, new ResponseModel<string> { Status = HttpStatusCode.BadRequest, Data = "", Message = "Mobile Number is invalid" });
             }
 
-
-
              await UserManager.IfExistSendOTP(mobileNo);
-
+             
              return Request.CreateResponse<ResponseModel<string>>(HttpStatusCode.OK, new ResponseModel<string> { Status = HttpStatusCode.OK, Data = "", Message = "Sms sent on device" });
             
         }

@@ -23,6 +23,13 @@ namespace Retailer
             using(ApplicationDbContext db=new ApplicationDbContext())
             {
                 user= db.Users.FirstOrDefault(x => x.OTP == OTP && x.MobileNumber==MobileNumber);
+                if (user != null)
+                {
+                    user.OTP = "";
+                    if (!user.MobileNumberConfirmed)
+                        user.MobileNumberConfirmed = true;
+                    await db.SaveChangesAsync();
+                }
             }
             //var manager = new ApplicationUserManager();
             //var item=manager.Users.fin
@@ -54,16 +61,16 @@ namespace Retailer
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
                 AllowOnlyAlphanumericUserNames = false,
-                RequireUniqueEmail = true
+                RequireUniqueEmail = false
             };
             // Configure validation logic for passwords
             manager.PasswordValidator = new PasswordValidator
             {
-                RequiredLength = 6,
-                RequireNonLetterOrDigit = true,
-                RequireDigit = true,
-                RequireLowercase = true,
-                RequireUppercase = true,
+                //RequiredLength = 6,
+                //RequireNonLetterOrDigit = true,
+                //RequireDigit = true,
+                //RequireLowercase = true,
+                //RequireUppercase = true,
             };
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)

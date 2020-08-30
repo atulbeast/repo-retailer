@@ -29,15 +29,15 @@ namespace Retailer.Controllers
         }
 
         // GET: api/SubCategories/5
-        [ResponseType(typeof(SubCategory))]
-        public async Task<HttpResponseMessage> GetSubCategory(long id)
+        [Route("api/GetSubCategoryByCategory")]
+        public async Task<HttpResponseMessage> GetSubCategoryByCategory(long id)
         {
-            SubCategory subCategory = await db.SubCategory.FindAsync(id);
+            List<SubCategory> subCategory = await db.SubCategory.Where(x=>x.CategoryId==id).ToListAsync();
             if (subCategory == null)
             {
-                return Request.CreateResponse<ResponseModel<SubCategory>>(HttpStatusCode.NotFound, new ResponseModel<SubCategory> { Status = HttpStatusCode.NotFound, Data = subCategory, Message = "sub category doesn't exist" });
+                return Request.CreateResponse<ResponseModel<List<SubCategory>>>( new ResponseModel<List<SubCategory>> { Status = HttpStatusCode.NotFound, Data = subCategory, Message = "sub category doesn't exist" });
             }
-            return Request.CreateResponse<ResponseModel<SubCategory>>(HttpStatusCode.OK, new ResponseModel<SubCategory> { Status = HttpStatusCode.OK, Data = subCategory, Message = "Successfully retrieved" });
+            return Request.CreateResponse<ResponseModel<List<SubCategory>>>(HttpStatusCode.OK, new ResponseModel<List<SubCategory>> { Status = HttpStatusCode.OK, Data = subCategory, Message = "Successfully retrieved" });
                 
         }
 

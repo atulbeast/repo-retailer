@@ -18,6 +18,7 @@ namespace Retailer.Models.DataModel
         public long SubCategoryId { get; set; }
         public virtual SubCategory SubCategory { get; set; }
         public virtual Shop Shop{get;set;}
+        public virtual ICollection<ProductImage> ProductImages { get; set; }
         
     }
 
@@ -25,9 +26,9 @@ namespace Retailer.Models.DataModel
     {
         public long Id { get; set; }
         public string ImageUrl { get; set; }
-        [ForeignKey("Product")]
+        //[ForeignKey("Product")]
         public long ProductId { get; set; }
-        public virtual Product Product { get; set; }
+        //public virtual Product Product { get; set; }
         public bool IsDeleted { get; set; }
     }
 

@@ -10,6 +10,7 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using Retailer.Models;
+using System.Dynamic;
 
 namespace Retailer.Providers
 {
@@ -44,6 +45,7 @@ namespace Retailer.Providers
                 context.SetError("invalid_grant", "The user name or password is incorrect.");
                 return;
             }
+          
 
             ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
                OAuthDefaults.AuthenticationType);
@@ -55,13 +57,26 @@ namespace Retailer.Providers
             context.Validated(ticket);
             context.Request.Context.Authentication.SignIn(cookiesIdentity);
         }
-
+        public static void AddProperty(ExpandoObject expando, string propertyName, object propertyValue)
+        {
+            // ExpandoObject supports IDictionary so we can extend it like this
+            var expandoDict = expando as IDictionary<string, object>;
+            if (expandoDict.ContainsKey(propertyName))
+                expandoDict[propertyName] = propertyValue;
+            else
+                expandoDict.Add(propertyName, propertyValue);
+        }
         public override Task TokenEndpoint(OAuthTokenEndpointContext context)
         {
+            dynamic item = new ExpandoObject();
             foreach (KeyValuePair<string, string> property in context.Properties.Dictionary)
             {
-                context.AdditionalResponseParameters.Add(property.Key, property.Value);
+                
+               AddProperty(item,property.Key,property.Value);
             }
+
+            context.AdditionalResponseParameters.Add("Data", Newtonsoft.Json.JsonConvert.SerializeObject(item));
+            //context.AdditionalResponseParameters.Add("ItemD",Newtonsoft.Json.JsonConvert.SerializeObject( new { name = "asf", life = "lsdf21" }));
 
             return Task.FromResult<object>(null);
         }
