@@ -229,6 +229,14 @@
     <Compile Include="Migrations\202008281353563_subcategory_imgurl.Designer.cs">
       <DependentUpon>202008281353563_subcategory_imgurl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009010524250_null-foreignkey.cs" />
+    <Compile Include="Migrations\202009010524250_null-foreignkey.Designer.cs">
+      <DependentUpon>202009010524250_null-foreignkey.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009010525538_date-col.cs" />
+    <Compile Include="Migrations\202009010525538_date-col.Designer.cs">
+      <DependentUpon>202009010525538_date-col.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -334,6 +342,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202008281353563_subcategory_imgurl.resx">
       <DependentUpon>202008281353563_subcategory_imgurl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009010524250_null-foreignkey.resx">
+      <DependentUpon>202009010524250_null-foreignkey.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009010525538_date-col.resx">
+      <DependentUpon>202009010525538_date-col.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

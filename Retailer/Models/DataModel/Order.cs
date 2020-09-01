@@ -15,10 +15,12 @@ namespace Retailer.Models.DataModel
         public string OrderNumber { get; set; }
         public int status { get; set; }
         [ForeignKey("Address")]
-        public long AddressId { get; set; }
+        public long? AddressId { get; set; }
         [ForeignKey("Payment")]
-        public long PaymentId { get; set; }
+        public long? PaymentId { get; set; }
         public bool IsDeleted { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
         [ForeignKey("User")]
         public string UserId { get; set; }
         public virtual ApplicationUser User { get; set; }
