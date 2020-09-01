@@ -237,6 +237,14 @@
     <Compile Include="Migrations\202009010525538_date-col.Designer.cs">
       <DependentUpon>202009010525538_date-col.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009011544182_wishlist_change.cs" />
+    <Compile Include="Migrations\202009011544182_wishlist_change.Designer.cs">
+      <DependentUpon>202009011544182_wishlist_change.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009011548097_wishlist_change_userId.cs" />
+    <Compile Include="Migrations\202009011548097_wishlist_change_userId.Designer.cs">
+      <DependentUpon>202009011548097_wishlist_change_userId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -348,6 +356,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009010525538_date-col.resx">
       <DependentUpon>202009010525538_date-col.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009011544182_wishlist_change.resx">
+      <DependentUpon>202009011544182_wishlist_change.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009011548097_wishlist_change_userId.resx">
+      <DependentUpon>202009011548097_wishlist_change_userId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

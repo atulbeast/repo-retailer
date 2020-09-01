@@ -30,6 +30,7 @@ namespace Retailer.Models
             : base("RetailerConnection", throwIfV1Schema: false)
         {
           //  Database.SetInitializer(new ApplicationInitializer());
+            this.Configuration.LazyLoadingEnabled = false;
         }
         public DbSet<Address> Address { get; set; }
         public DbSet<Banner> Banner { get; set; }

@@ -23,7 +23,7 @@ namespace Retailer.Controllers
         {
             //int cart = 1;
             string UserId = User.Identity.GetUserId();// Convert.ToInt32(Session["UserId"]);
-            var order = db.Order.OrderByDescending(x => x.Id).FirstOrDefault(x => x.UserId == UserId && x.status == 1);
+            var order = db.Order.Include(x=>x.LineItems).OrderByDescending(x => x.Id).FirstOrDefault(x => x.UserId == UserId && x.status == 1);
 
             if (order == null)
             {
@@ -73,7 +73,7 @@ namespace Retailer.Controllers
         public async Task<HttpResponseMessage> UpdateCart(int id, int quantity)
         {
             string UserId =User.Identity.GetUserId();
-            var Order = db.Order.OrderByDescending(x => x.Id).FirstOrDefault(x => x.UserId == UserId && x.status == 1);
+            var Order = db.Order.Include(x=>x.LineItems).OrderByDescending(x => x.Id).FirstOrDefault(x => x.UserId == UserId && x.status == 1);
             var Item = Order.LineItems.FirstOrDefault(x => x.Id == id);
             decimal Total = 0;
             int Quantity = 0;
@@ -88,7 +88,7 @@ namespace Retailer.Controllers
                     Item.Quantity = quantity;
                     Item.Total = Item.Quantity * Item.Amount;
                 }
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 if (Order.LineItems.Any())
                 {
                     Total = Order.LineItems.Sum(x => x.Quantity * x.Amount);
@@ -111,7 +111,7 @@ namespace Retailer.Controllers
         {
             string UserId = User.Identity.GetUserId();
             //var item = new CartView();
-            var order = db.Order.OrderByDescending(x => x.Id).FirstOrDefault(x => x.UserId == UserId && x.status == 1);
+            var order = db.Order.Include(x=>x.LineItems).OrderByDescending(x => x.Id).FirstOrDefault(x => x.UserId == UserId && x.status == 1);
             //if (order != null)
             //{
             //    item.CartModels = db.tblLineItem.Where(x => x.OrderId == order.Id).Select(x => new CartModel { Discount = (double)(x.Discount), Name = x.Name, Price = x.Price, Quantity = x.Quantity, Category = x.Category, Id = x.Id, Metadata = x.Metadata }).ToList();
@@ -131,6 +131,67 @@ namespace Retailer.Controllers
             return Request.CreateResponse<ResponseModel<Order>>(new ResponseModel<Order> { Status = HttpStatusCode.OK, Data = order, Message = "Order" });
         }
 
+
+        [HttpGet]
+        [Route("api/Wishes")]
+        public async Task<HttpResponseMessage> WishList()
+        {
+            string UserId = User.Identity.GetUserId();
+            //var item = new CartView();
+            var wishList = await db.WishList.Include(x => x.Product).Where(x => x.UserId == UserId ).OrderByDescending(x => x.Id).ToListAsync();
+            return Request.CreateResponse<ResponseModel<List<WishList>>>(new ResponseModel<List<WishList>> { Status = HttpStatusCode.OK, Data = wishList, Message = "Wishlist loaded successfully" });
+        }
+
+        [HttpGet]
+        [Route("api/AddWish")]
+        public async Task<HttpResponseMessage> Wish(long productId)
+        {
+            string UserId = User.Identity.GetUserId();
+            try
+            {
+
+            
+            var wishItem = await db.WishList.FirstOrDefaultAsync(x => x.ProductId == productId && x.UserId == UserId);
+            if (wishItem == null)
+            {
+                var wishlist = db.WishList.Add(new WishList { ProductId = productId, UserId = UserId });
+                await db.SaveChangesAsync();
+                return Request.CreateResponse<ResponseModel<WishList>>(new ResponseModel<WishList> { Status = HttpStatusCode.OK, Data = wishlist, Message = "Successfully added" });
+            }
+            else
+            {
+                return Request.CreateResponse<ResponseModel<WishList>>(new ResponseModel<WishList> { Status = HttpStatusCode.Ambiguous, Message = "Product already present" });
+            }
+                }
+            catch(Exception ex)
+            {
+                return Request.CreateResponse<ResponseModel<WishList>>(new ResponseModel<WishList> { Status = HttpStatusCode.NotFound, Message = ex.Message.ToString() });
+            }
+
+            
+        }
+
+
+        [HttpDelete]
+        [Route("api/RemoveWish")]
+        public async Task<HttpResponseMessage> RemoveWish(long id)
+        {
+            string UserId = User.Identity.GetUserId();
+            var wishItem =await db.WishList.FirstOrDefaultAsync(x=>x.Id==id && x.UserId==UserId);
+                   if(wishItem!=null)
+                   {
+                       db.WishList.Remove(wishItem);
+                        await db.SaveChangesAsync();
+                        return Request.CreateResponse<ResponseModel<WishList>>(new ResponseModel<WishList> { Status = HttpStatusCode.OK, Data = wishItem, Message = "Data deleted Successfully" });
+                   }
+
+                   return Request.CreateResponse<ResponseModel<WishList>>(new ResponseModel<WishList> { Status = HttpStatusCode.NotFound, Data = wishItem, Message = "Record doesn't exist" });
+
+                   
+        }
+
+
+
         public LineItem getItemDetail(long productId, long orderId)
         {
             var item = db.Product.FirstOrDefault(x => x.Id == productId);
@@ -146,6 +207,8 @@ namespace Retailer.Controllers
             }
             return null;
         }
+
+        
 
     }
 }

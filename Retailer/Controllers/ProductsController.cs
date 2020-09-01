@@ -23,8 +23,9 @@ namespace Retailer.Controllers
         // GET: api/Products
         public async Task<HttpResponseMessage> GetProduct()
         {
-            var product = await db.Product.ToListAsync();
-            return Request.CreateResponse<ResponseModel<List<Product>>>(new ResponseModel<List<Product>> { Status = HttpStatusCode.OK, Data = product, Message = "data updated" });
+            var product = await db.Product.Include(x=>x.ProductImages).ToListAsync();
+            
+            return Request.CreateResponse<ResponseModel<List<Product>>>(new ResponseModel<List<Product>> { Status = HttpStatusCode.OK, Data = product, Message = "data loaded" });
         }
 
         // GET: api/Products/5
