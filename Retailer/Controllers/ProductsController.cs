@@ -16,6 +16,7 @@ using Retailer.Common;
 
 namespace Retailer.Controllers
 {
+
     public class ProductsController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();

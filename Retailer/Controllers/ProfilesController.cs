@@ -10,18 +10,26 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Retailer.Models;
+using Microsoft.AspNet.Identity;
 using Retailer.Models.DataModel;
 
 namespace Retailer.Controllers
 {
+    [Authorize]
     public class ProfilesController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/Profiles
-        public IQueryable<Profile> GetProfile()
+        public async Task<HttpResponseMessage> GetProfile()
         {
-            return db.Profile;
+            string UserId = User.Identity.GetUserId();
+            
+            var user = await db.Users.Include(x=>x.Profile).FirstOrDefaultAsync(x => x.Id == UserId);
+            if(user.Profile!=null)
+                return Request.CreateResponse<ResponseModel<Profile>>(new ResponseModel<Profile> { Status = HttpStatusCode.OK, Data = user.Profile, Message = "data successfully loaded" });
+
+            return Request.CreateResponse<ResponseModel<Profile>>(new ResponseModel<Profile> { Status = HttpStatusCode.NotFound, Data = null, Message = "Profile doesn't exist" });
         }
 
         // GET: api/Profiles/5

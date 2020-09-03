@@ -13,6 +13,7 @@ using Retailer.Models.DataModel;
 using System.Data.Entity;
 namespace Retailer.Controllers
 {
+    [Authorize]
     public class CartController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();

@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using System.Data.Entity;
 using Retailer.Models.DataModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Retailer.Models
 {
@@ -15,6 +16,9 @@ namespace Retailer.Models
         public string OTP { get; set; }
         public string MobileNumber { get; set; }
         public bool MobileNumberConfirmed { get; set; }
+        [ForeignKey("Profile")]
+        public long? ProfileId { get; set; }
+        public virtual Profile Profile { get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType

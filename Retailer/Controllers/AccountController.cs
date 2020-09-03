@@ -349,6 +349,11 @@ namespace Retailer.Controllers
                 }
                 return Request.CreateResponse<ResponseModel<RegisterBindingModel>>(HttpStatusCode.InternalServerError, new ResponseModel<RegisterBindingModel> { Status = HttpStatusCode.InternalServerError, Data = model, Message = Utils.getErrors(ModelState) });
             }
+                using(var appDB=new ApplicationDbContext())
+                {
+                    appDB.Profile.Add(new Models.DataModel.Profile { ContactNo = model.MobileNumber, Email = model.Email });
+                    await appDB.SaveChangesAsync();
+                }
             return Request.CreateResponse<ResponseModel<RegisterBindingModel>>(HttpStatusCode.Created, new ResponseModel<RegisterBindingModel> { Status = HttpStatusCode.Created, Data = model, Message = "Added Successfully" });
            }
             catch(Exception ex)

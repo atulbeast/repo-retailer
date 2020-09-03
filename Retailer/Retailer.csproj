@@ -245,6 +245,10 @@
     <Compile Include="Migrations\202009011548097_wishlist_change_userId.Designer.cs">
       <DependentUpon>202009011548097_wishlist_change_userId.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009030344221_Profile_foreignkey_user.cs" />
+    <Compile Include="Migrations\202009030344221_Profile_foreignkey_user.Designer.cs">
+      <DependentUpon>202009030344221_Profile_foreignkey_user.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -362,6 +366,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009011548097_wishlist_change_userId.resx">
       <DependentUpon>202009011548097_wishlist_change_userId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009030344221_Profile_foreignkey_user.resx">
+      <DependentUpon>202009030344221_Profile_foreignkey_user.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
