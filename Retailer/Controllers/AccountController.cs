@@ -16,6 +16,8 @@ using Microsoft.Owin.Security.OAuth;
 using Retailer.Models;
 using Retailer.Providers;
 using Retailer.Results;
+using System.Net;
+using Retailer.Common;
 
 namespace Retailer.Controllers
 {
@@ -321,23 +323,62 @@ namespace Retailer.Controllers
         // POST api/Account/Register
         [AllowAnonymous]
         [Route("Register")]
-        public async Task<IHttpActionResult> Register(RegisterBindingModel model)
+        public async Task<HttpResponseMessage> Register(RegisterBindingModel model)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                //return BadRequest(ModelState);
+                return Request.CreateResponse<ResponseModel<RegisterBindingModel>>(HttpStatusCode.BadRequest, new ResponseModel<RegisterBindingModel> { Status = HttpStatusCode.BadRequest, Data = model, Message = Utils.getErrors(ModelState) });
             }
 
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+            var user = new ApplicationUser() { UserName = "mobUser", Email = model.Email,MobileNumber=model.MobileNumber };
 
-            IdentityResult result = await UserManager.CreateAsync(user, model.Password);
-
+           
+            try
+            {
+                IdentityResult result = await UserManager.CreateAsync(user, "defaultPass");
+                UserManager.AddToRole(user.Id, "Consumer");
+            
+            await UserManager.IfExistSendOTP(model.MobileNumber);
+            
             if (!result.Succeeded)
             {
-                return GetErrorResult(result);
+                foreach (string error in result.Errors)
+                {
+                    ModelState.AddModelError("", error);
+                }
+                return Request.CreateResponse<ResponseModel<RegisterBindingModel>>(HttpStatusCode.InternalServerError, new ResponseModel<RegisterBindingModel> { Status = HttpStatusCode.InternalServerError, Data = model, Message = Utils.getErrors(ModelState) });
+            }
+                using(var appDB=new ApplicationDbContext())
+                {
+                    appDB.Profile.Add(new Models.DataModel.Profile { ContactNo = model.MobileNumber, Email = model.Email });
+                    await appDB.SaveChangesAsync();
+                }
+            return Request.CreateResponse<ResponseModel<RegisterBindingModel>>(HttpStatusCode.Created, new ResponseModel<RegisterBindingModel> { Status = HttpStatusCode.Created, Data = model, Message = "Added Successfully" });
+           }
+            catch(Exception ex)
+            {
+                return Request.CreateResponse<ResponseModel<RegisterBindingModel>>( new ResponseModel<RegisterBindingModel> { Status = HttpStatusCode.InternalServerError, Data = model, Message = ex.Message.ToString() });
+
             }
 
-            return Ok();
+           
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("DeviceLogin")]
+        public async Task<HttpResponseMessage> Login(string mobileNo)
+        {
+            if (String.IsNullOrEmpty(mobileNo))
+            {
+                return Request.CreateResponse<ResponseModel<string>>(HttpStatusCode.BadRequest, new ResponseModel<string> { Status = HttpStatusCode.BadRequest, Data = "", Message = "Mobile Number is invalid" });
+            }
+
+             await UserManager.IfExistSendOTP(mobileNo);
+             
+             return Request.CreateResponse<ResponseModel<string>>(HttpStatusCode.OK, new ResponseModel<string> { Status = HttpStatusCode.OK, Data = "", Message = "Sms sent on device" });
+            
         }
 
         // POST api/Account/RegisterExternal
