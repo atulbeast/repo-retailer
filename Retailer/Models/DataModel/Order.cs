@@ -6,6 +6,9 @@ using System.Web;
 
 namespace Retailer.Models.DataModel
 {
+    public enum Status {
+       CHECKOUT=1,ADDRESS=2,PAYMENT=3,COMPLETE=4
+    }
     public class Order
     {
         public long Id { get; set; }
@@ -13,7 +16,7 @@ namespace Retailer.Models.DataModel
         public decimal Total { get; set; }
         public decimal Amount { get; set; }
         public string OrderNumber { get; set; }
-        public int status { get; set; }
+        public Status status { get; set; }
         [ForeignKey("Address")]
         public long? AddressId { get; set; }
         [ForeignKey("Payment")]

@@ -13,9 +13,14 @@ namespace Retailer.Models.DataModel
         public string MobileNumber {get;set;}
         public string Address1  {get;set;}
         public string Address2 {get;set;}
+        public string Locality { get; set; }
+        public string HouseNo { get; set; }
+        public string Floor { get; set; }
+        public string Landmark { get; set; }
         public long StateId {get;set;}
         public long CityId {get;set;}
         public string Country {get;set;}
+        public string Type { get; set; }
         [ForeignKey("User")]
         public string UserId { get; set; }
         public virtual ApplicationUser User { get; set; }

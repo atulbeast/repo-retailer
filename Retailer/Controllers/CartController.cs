@@ -24,7 +24,7 @@ namespace Retailer.Controllers
         {
             //int cart = 1;
             string UserId = User.Identity.GetUserId();// Convert.ToInt32(Session["UserId"]);
-            var order = db.Order.Include(x=>x.LineItems).OrderByDescending(x => x.Id).FirstOrDefault(x => x.UserId == UserId && x.status == 1);
+            var order = db.Order.Include(x=>x.LineItems).OrderByDescending(x => x.Id).FirstOrDefault(x => x.UserId == UserId && x.status == Status.CHECKOUT);
 
             if (order == null)
             {
@@ -36,7 +36,7 @@ namespace Retailer.Controllers
                 {
                     OrderNo = "RET" + String.Format("{00:00000000}", int.Parse(Regex.Match(prevOrder.OrderNumber, @"\d+").Value, NumberFormatInfo.InvariantInfo) + 1);
                 }
-                order = db.Order.Add(new Order() { status = 1, UserId = UserId, OrderNumber = OrderNo, IsDeleted = false,CreatedAt=DateTime.Now,UpdatedAt=DateTime.Now,Total=0,Amount=0 });
+                order = db.Order.Add(new Order() { status = Status.CHECKOUT, UserId = UserId, OrderNumber = OrderNo, IsDeleted = false,CreatedAt=DateTime.Now,UpdatedAt=DateTime.Now,Total=0,Amount=0 });
                 db.SaveChanges();
                 var lineItem = getItemDetail(id, order.Id);
                 lineItem.Quantity = 1;
@@ -65,7 +65,7 @@ namespace Retailer.Controllers
                 order.Total = db.LineItem.Where(x => x.OrderId == order.Id).Sum(x => x.Quantity * x.Amount);
                 await  db.SaveChangesAsync();
             }
-
+            await db.Entry(order).Collection(x => x.LineItems).Query().Include(y => y.Product).Include(y => y.Product.ProductImages).LoadAsync();
             return Request.CreateResponse<ResponseModel<Order>>(new ResponseModel<Order> { Status = HttpStatusCode.OK, Data = order, Message = "Product Added to cart" });
         }
 
@@ -74,7 +74,7 @@ namespace Retailer.Controllers
         public async Task<HttpResponseMessage> UpdateCart(int id, int quantity)
         {
             string UserId =User.Identity.GetUserId();
-            var Order = db.Order.Include(x=>x.LineItems).OrderByDescending(x => x.Id).FirstOrDefault(x => x.UserId == UserId && x.status == 1);
+            var Order = db.Order.Include(x=>x.LineItems).OrderByDescending(x => x.Id).FirstOrDefault(x => x.UserId == UserId && x.status == Status.CHECKOUT);
             var Item = Order.LineItems.FirstOrDefault(x => x.Id == id);
             decimal Total = 0;
             int Quantity = 0;
@@ -104,6 +104,8 @@ namespace Retailer.Controllers
             //else
             Order.Total = Total;
             await db.SaveChangesAsync();
+            await db.Entry(Order).Collection(x => x.LineItems).Query().Include(y => y.Product).Include(y => y.Product.ProductImages).LoadAsync();
+   
             return Request.CreateResponse<ResponseModel<Order>>(new ResponseModel<Order> { Status = HttpStatusCode.OK, Data = Order, Message = "Cart Updated" });
         }
 
@@ -112,7 +114,9 @@ namespace Retailer.Controllers
         {
             string UserId = User.Identity.GetUserId();
             //var item = new CartView();
-            var order = db.Order.Include(x=>x.LineItems).OrderByDescending(x => x.Id).FirstOrDefault(x => x.UserId == UserId && x.status == 1);
+            var order = db.Order.Include(x=>x.LineItems).OrderByDescending(x => x.Id).FirstOrDefault(x => x.UserId == UserId && x.status == Status.CHECKOUT);
+            await db.Entry(order).Collection(x => x.LineItems).Query().Include(y => y.Product).Include(y=>y.Product.ProductImages).LoadAsync();
+   
             //if (order != null)
             //{
             //    item.CartModels = db.tblLineItem.Where(x => x.OrderId == order.Id).Select(x => new CartModel { Discount = (double)(x.Discount), Name = x.Name, Price = x.Price, Quantity = x.Quantity, Category = x.Category, Id = x.Id, Metadata = x.Metadata }).ToList();
